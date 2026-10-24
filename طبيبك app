@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>اختبار</title>
+<body style="font:20px sans-serif;padding:16px">
+<h2>اختبار طبيبك</h2>
+<pre id="o" style="white-space:pre-wrap;font-size:16px">جارٍ الفحص...</pre>
+<input id="e" type="email" placeholder="البريد" style="width:100%;font-size:18px;padding:8px;margin:4px 0"><br>
+<input id="p" type="password" placeholder="كلمة المرور" style="width:100%;font-size:18px;padding:8px;margin:4px 0"><br>
+<button id="b" style="font-size:20px;padding:12px 24px">دخول</button>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const o=document.getElementById("o");const log=m=>o.textContent+="\n"+m;
+o.textContent="1) JavaScript يعمل";
+log("2) المكتبة: "+(window.supabase?"محمّلة":"غير محمّلة"));
+const U="https://oiclgywmduooeefsvuyn.supabase.co",K="sb_publishable_lYdmmS6jV8Kl6kUgxoks7A_GDIqHWQf";
+let sb;try{sb=supabase.createClient(U,K,{auth:{lock:async(n,w,f)=>await f()}});log("3) العميل: تم")}catch(e){log("3) خطأ: "+e.message)}
+fetch(U+"/rest/v1/specialties?select=id&limit=1",{headers:{apikey:K}}).then(r=>log("4) الخادم: "+r.status)).catch(e=>log("4) الخادم: خطأ "+e.message));
+document.getElementById("b").onclick=async()=>{
+ log("5) ضغطة الزر وصلت");
+ const t=setTimeout(()=>log("لا رد بعد 10 ثوانٍ"),10000);
+ const {data,error}=await sb.auth.signInWithPassword({email:document.getElementById("e").value.trim(),password:document.getElementById("p").value});
+ clearTimeout(t);
+ log(error?"خطأ: "+error.message:"تم الدخول: "+data.user.email);
+};
+</script></body></html>
